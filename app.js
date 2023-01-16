@@ -11,6 +11,7 @@ import {
   getDoc,
   updateDoc,
   collectionGroup,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "./db.js";
 import bodyParser from "body-parser";
@@ -32,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const SALT_ROUNDS = process.env.SALT_ROUNDS;
 
 let lastPageUser = null; // used for pagination
 let lastPageAnimal = null;
@@ -53,7 +55,7 @@ app.post("/api/user", async (req, res) => {
       return;
     }
     if (Object.keys(data).includes("password")) {
-      data.password = bcrypt.hashSync(data.password, process.env.SALT_ROUNDS);
+      data.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(SALT_ROUNDS));
     }
 
     const docSnap = await getDoc(doc(db, collName.USER, data._id));
@@ -90,7 +92,7 @@ app.post("/api/animal", async (req, res) => {
     }
     data["owner"] = value._id;
     if (data.dateOfBirth) {
-      data["dateOfBirth"] = new Date(data.dateOfBirth);
+      data["dateOfBirth"] = new Date(new Date(data.dateOfBirth).toDateString());
     }
 
     const docRef = doc(
@@ -134,7 +136,7 @@ app.post("/api/training", async (req, res) => {
       new FirebaseError();
     }
 
-    data["date"] = new Date(data.date);
+    data["date"] = new Date(new Date(data.date).toDateString());
     let docRef = doc(db,
       `${collName.USER}/${data.owner}/${collName.ANIMAL}/${data.animal}`);
     getDoc(docRef).then((docSnap) => {
@@ -208,7 +210,11 @@ app.get("/api/admin/animals", async (req, res) => {
     docSnaps.forEach((doc) => {
       let newJson = {};
       for (let key in doc.data()) {
-        newJson[key] = doc.data()[key];
+        if (key === 'dateOfBirth') {
+          newJson[key] = new Date(doc.data()[key]).toDateString();
+        } else {
+          newJson[key] = doc.data()[key];
+        }
       }
       returnJSON[i] = newJson;
       i += 1;
@@ -235,7 +241,11 @@ app.get("/api/admin/training", async (req, res) => {
     docSnaps.forEach((doc) => {
       let newJson = {};
       for (let key in doc.data()) {
-        newJson[key] = doc.data()[key];
+        if (key === 'date') {
+          newJson[key] = new Date(doc.data()[key].seconds*1000).toDateString();
+        } else {
+          newJson[key] = doc.data()[key];
+        }
       }
       returnJSON[i] = newJson;
       i += 1;

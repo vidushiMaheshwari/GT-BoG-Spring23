@@ -39,6 +39,3 @@ export const collName = {
   ANIMAL: "Animal",
   TRAIN: "Training",
 };
-
-export const JWT_SECRET_KEY = 'jwt-secret-key';
-export const SALT_ROUNDS = 10;
