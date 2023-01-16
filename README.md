@@ -2,8 +2,9 @@
 Hello, thank you for considering my application for Bits of Good. I have completed the project to the best of my abilities till level 5, and this documentation is to explain and clarify differnt parts of the assessment. I have used **Express, Google Firestore and Storage** for the project. 
 ## Setup
 1. Clone the project and run npm install in the terminal. Fill in a string and a number in process.env file for JWT_STRING and SALT_ROUNDS respectively.
-2. Start the server through npm start.
-3. Different api end points can be tested through importing postman_example_test.json in the postman app. [Link to tests section!](#tests)
+2. Install packages through npm install.
+3. Start the server through npm start.
+4. Different api end points can be tested through importing postman_example_test.json in the postman app. [Link to tests section!](#tests)
 
 ## **About Database**
 ### Rules
