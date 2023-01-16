@@ -14,7 +14,7 @@ export const uploadHandler = (file, filename) => {
       reject("No file. Please put a file.");
       return;
     }
-    console.log(file);
+
     let fileUpload = bucket.file(`${filename}`);
 
     const blobStream = fileUpload.createWriteStream({
