@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const SALT_ROUNDS = process.env.SALT_ROUNDS;
 
 let lastPageUser = null; // used for pagination
 let lastPageAnimal = null;
@@ -53,7 +54,7 @@ app.post("/api/user", async (req, res) => {
       return;
     }
     if (Object.keys(data).includes("password")) {
-      data.password = bcrypt.hashSync(data.password, process.env.SALT_ROUNDS);
+      data.password = bcrypt.hashSync(data.password, SALT_ROUNDS);
     }
 
     const docSnap = await getDoc(doc(db, collName.USER, data._id));
